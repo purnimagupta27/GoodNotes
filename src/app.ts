@@ -1,12 +1,15 @@
 import express, { type Express, type Request, type Response } from "express";
 import { toNodeHandler, fromNodeHeaders } from "better-auth/node";
 import { auth } from "./lib/auth.js";
+import noteRoutes from './routes/notes.routes.js'
 
 const app: Express = express();
 
 app.all("/api/auth/*splat", toNodeHandler(auth));
 
 app.use(express.json());
+app.use(`/api/v1/notes`, noteRoutes)
+
 app.get("/api/health", (req: express.Request, res: express.Response) => {
   res.json({ status: "healthy", timestamp: new Date() });
 });
