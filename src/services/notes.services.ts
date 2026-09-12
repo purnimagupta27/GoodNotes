@@ -24,6 +24,31 @@ const createNoteService = async(notesData: noteType) => {
     return newPost
 }
 
+const getNoteService = async(userId: string) => {
+    const notes = await prisma.note.findMany({
+        where: {
+            userId: userId
+        }
+    })
+
+    return notes
+}
+
+const getNoteByIdService = async(noteId: string, userId: string) => {
+    const note = await prisma.note.findUnique({
+        where: {
+            userId: userId,
+            id: noteId
+        }
+    })
+
+    console.log(note)
+
+    return note
+}
+
 export{
-    createNoteService
+    createNoteService,
+    getNoteService,
+    getNoteByIdService
 }
