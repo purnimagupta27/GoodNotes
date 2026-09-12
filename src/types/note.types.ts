@@ -1,14 +1,11 @@
-enum Status {
-    PENDING = "pending",
-    COMPLETED = "completed"
-}
+import { NoteStatus } from "../generated/prisma/enums.js"
 
 export interface noteType{
     title: string
     description: string
     image?: string[]
     link?: string[]
-    status: Status
+    status: NoteStatus
     isFavourite: boolean 
     userId: string
 }
