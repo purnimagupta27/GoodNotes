@@ -2,6 +2,7 @@ import type { noteType } from "../types/note.types.js";
 import { prisma } from "../config/db.js";
 import { randomUUID } from "node:crypto";
 import { NoteStatus } from "../generated/prisma/enums.js";
+import redis from '../utils/redis.js'
 
 const createNoteService = async (notesData: noteType) => {
   const { title, description, image, link, status, isFavourite, userId } =
@@ -33,11 +34,23 @@ const createNoteService = async (notesData: noteType) => {
 };
 
 const getNoteService = async (userId: string) => {
+  const cachedNotes = await redis.get("notes")
+  if(cachedNotes){
+    console.log(cachedNotes)
+    return JSON.parse(cachedNotes)
+  }
+
   const notes = await prisma.note.findMany({
     where: {
       userId: userId,
     },
   });
+
+  await redis.set("notes",
+    JSON.stringify(notes),
+    "EX",
+    60
+  )
 
   return notes;
 };

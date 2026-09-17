@@ -15,23 +15,23 @@ app.get("/api/health", (req: express.Request, res: express.Response) => {
 });
 
 
-app.get("/api/protected-test", async (req: express.Request, res: express.Response) => {
+// app.get("/api/protected-test", async (req: express.Request, res: express.Response) => {
 
-  const session = await auth.api.getSession({
-    headers: fromNodeHeaders(req.headers),
-  });
-  if (!session) {
-    return res.status(401).json({ error: "Unauthorized - Please sign in first" });
-  }
-  res.json({
-    message: "Success! You are authenticated.",
-    user: session.user,
-    session: session.session,
-  });
-});
+//   const session = await auth.api.getSession({
+//     headers: fromNodeHeaders(req.headers),
+//   });
+//   if (!session) {
+//     return res.status(401).json({ error: "Unauthorized - Please sign in first" });
+//   }
+//   res.json({
+//     message: "Success! You are authenticated.",
+//     user: session.user,
+//     session: session.session,
+//   });
+// });
 
-app.get("/", (req: Request, res: Response) => {
-  res.send("Running...");
-});
+// app.get("/", (req: Request, res: Response) => {
+//   res.send("Running...");
+// });
 
 export default app;
