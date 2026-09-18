@@ -35,8 +35,7 @@ const createNoteService = async (notesData: noteType) => {
 
 const getNoteService = async (userId: string) => {
   const cachedNotes = await redis.get("notes")
-  if(cachedNotes){
-    console.log(cachedNotes)
+  if (cachedNotes) {
     return JSON.parse(cachedNotes)
   }
 
@@ -49,7 +48,7 @@ const getNoteService = async (userId: string) => {
   await redis.set("notes",
     JSON.stringify(notes),
     "EX",
-    60
+    1200
   )
 
   return notes;
@@ -63,8 +62,6 @@ const getNoteByIdService = async (noteId: string, userId: string) => {
     },
   });
 
-  console.log(note);
-
   return note;
 };
 
@@ -74,32 +71,34 @@ const updateNoteService = async (notesData: Partial<noteType>, userId: string, n
 
   const updatedNote = await prisma.note.update({
     where: {
-        id: noteId,
-        userId
+      id: noteId,
+      userId
     },
     data: {
       ...(title !== undefined && { title }),
       ...(description !== undefined && { description }),
       ...(image !== undefined && { image }),
       ...(link !== undefined && { link }),
-      ...(status !== undefined && { status: status as NoteStatus}),
+      ...(status !== undefined && { status: status as NoteStatus }),
       ...(isFavourite !== undefined && { isFavourite }),
     },
   });
+
+  await redis.del("notes")
 
   return updatedNote
 };
 
 
-const deleteNoteService = async(noteId: string, userId: string) => {
-    const deletedNote = await prisma.note.delete({
-        where: {
-            id: noteId,
-            userId
-        }
-    })
+const deleteNoteService = async (noteId: string, userId: string) => {
+  const deletedNote = await prisma.note.delete({
+    where: {
+      id: noteId,
+      userId
+    }
+  })
 
-    return deletedNote
+  return deletedNote
 }
 
 export {
